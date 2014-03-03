@@ -8,6 +8,8 @@
 #include <vector>
 #include <memory>
 
+#include "Param.h"
+
 #include <poppler-config.h>
 #include <PDFDoc.h>
 #include <goo/ImgWriter.h>
@@ -95,7 +97,8 @@ void SplashBackgroundRenderer::embed_image(int pageno)
     if((xmin <= xmax) && (ymin <= ymax))
     {
         {
-            auto fn = html_renderer->str_fmt("%s/bg%x.%s", (param.embed_image ? param.tmp_dir : param.dest_dir).c_str(), pageno, param.bg_format.c_str());
+            string filled_image_filename = (char*)html_renderer->str_fmt(param.image_filename.c_str(), pageno);
+            auto fn = html_renderer->str_fmt("%s/%s.%s", (param.embed_image ? param.tmp_dir : param.dest_dir).c_str(), filled_image_filename.c_str(), param.bg_format.c_str());
             if(param.embed_image)
                 html_renderer->tmp_files.add((char*)fn);
 
