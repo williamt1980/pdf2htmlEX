@@ -249,6 +249,7 @@ void check_param()
     if(param.output_filename.empty())
     {
         const string s = get_filename(param.input_filename);
+        param.image_filename = s.substr(0, s.size() - 4) + "%x";
         if(get_suffix(param.input_filename) == ".pdf")
         {
             param.output_filename = s.substr(0, s.size() - 4) + ".html";
@@ -259,6 +260,11 @@ void check_param()
             param.output_filename = s + ".html";
         }
     }
+    else
+    {
+        const string suffix = get_suffix(param.output_filename);
+        param.image_filename = param.output_filename.substr(0, param.output_filename.size() - suffix.size()) + "%x";
+    }
 
     if(param.page_filename.empty())
     {
@@ -266,12 +272,10 @@ void check_param()
         if(get_suffix(param.input_filename) == ".pdf")
         {
             param.page_filename = s.substr(0, s.size() - 4) + "%d.page";
-            param.image_filename = s.substr(0, s.size() - 4) + "%x";
         }
         else
         {
             param.page_filename = s + "%d.page";
-            param.image_filename = s + "%x";
         }
         sanitize_filename(param.page_filename);
     }
@@ -284,7 +288,6 @@ void check_param()
             // Inject the placeholder just before the file extension
             const string suffix = get_suffix(param.page_filename);
             param.page_filename = param.page_filename.substr(0, param.page_filename.size() - suffix.size()) + "%d" + suffix;
-            param.image_filename = param.page_filename.substr(0, param.page_filename.size() - suffix.size()) + "%x";
             sanitize_filename(param.page_filename);
         }
     }
