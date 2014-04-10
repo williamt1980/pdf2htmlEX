@@ -58,7 +58,7 @@ void SplashBackgroundRenderer::drawChar(GfxState *state, double x, double y,
     // - OR using a writing mode font
     // - OR using a Type 3 font while param.process_type3 is not enabled
     if((param.fallback)
-       || ( (state->getFont()) 
+       || ( (state->getFont())
             && ( (state->getFont()->getWMode())
                  || ((state->getFont()->getType() == fontType3) && (!param.process_type3))
                )
@@ -81,7 +81,7 @@ static GBool annot_cb(Annot *, void *) {
 void SplashBackgroundRenderer::render_page(PDFDoc * doc, int pageno)
 {
     doc->displayPage(this, pageno, param.h_dpi, param.v_dpi,
-            0, 
+            0,
             (!(param.use_cropbox)),
             false, false,
             nullptr, nullptr, &annot_cb, nullptr);
@@ -92,12 +92,12 @@ void SplashBackgroundRenderer::embed_image(int pageno)
     // xmin->xmax is top->bottom
     int xmin, xmax, ymin, ymax;
     getModRegion(&xmin, &ymin, &xmax, &ymax);
+    string filled_image_filename = (char*)html_renderer->str_fmt(param.image_filename.c_str(), pageno);
 
     // dump the background image only when it is not empty
     if((xmin <= xmax) && (ymin <= ymax))
     {
         {
-            string filled_image_filename = (char*)html_renderer->str_fmt(param.image_filename.c_str(), pageno);
             auto fn = html_renderer->str_fmt("%s/%s.%s", (param.embed_image ? param.tmp_dir : param.dest_dir).c_str(), filled_image_filename.c_str(), param.bg_format.c_str());
             if(param.embed_image)
                 html_renderer->tmp_files.add((char*)fn);
@@ -110,8 +110,8 @@ void SplashBackgroundRenderer::embed_image(int pageno)
 
         auto & f_page = *(html_renderer->f_curpage);
         auto & all_manager = html_renderer->all_manager;
-        
-        f_page << "<img class=\"" << CSS::BACKGROUND_IMAGE_CN 
+
+        f_page << "<img class=\"" << CSS::BACKGROUND_IMAGE_CN
             << " " << CSS::LEFT_CN      << all_manager.left.install(((double)xmin) * h_scale)
             << " " << CSS::BOTTOM_CN    << all_manager.bottom.install(((double)getBitmapHeight() - 1 - ymax) * v_scale)
             << " " << CSS::WIDTH_CN     << all_manager.width.install(((double)(xmax - xmin + 1)) * h_scale)
@@ -120,7 +120,7 @@ void SplashBackgroundRenderer::embed_image(int pageno)
 
         if(param.embed_image)
         {
-            auto path = html_renderer->str_fmt("%s/bg%x.%s", param.tmp_dir.c_str(), pageno, param.bg_format.c_str());
+            auto path = html_renderer->str_fmt("%s/%s.%s", param.tmp_dir.c_str(), filled_image_filename.c_str(), param.bg_format.c_str());
             ifstream fin((char*)path, ifstream::binary);
             if(!fin)
                 throw string("Cannot read background image ") + (char*)path;
@@ -134,7 +134,7 @@ void SplashBackgroundRenderer::embed_image(int pageno)
         }
         else
         {
-            f_page << (char*)html_renderer->str_fmt("bg%x.%s", pageno, param.bg_format.c_str());
+            f_page << (char*)html_renderer->str_fmt("%s.%s", filled_image_filename.c_str(), param.bg_format.c_str());
         }
         f_page << "\"/>";
     }
@@ -175,7 +175,7 @@ void SplashBackgroundRenderer::dump_image(const char * filename, int x1, int y1,
 
     if(!writer->init(f, width, height, param.h_dpi, param.v_dpi))
         throw "Cannot initialize PNGWriter";
-        
+
     auto * bitmap = getBitmap();
     assert(bitmap->getMode() == splashModeRGB8);
 
@@ -190,8 +190,8 @@ void SplashBackgroundRenderer::dump_image(const char * filename, int x1, int y1,
         pointers.push_back(p);
         p += row_size;
     }
-    
-    if(!writer->writePointers(pointers.data(), height)) 
+
+    if(!writer->writePointers(pointers.data(), height))
     {
         throw "Cannot write background image";
     }

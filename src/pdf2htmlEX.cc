@@ -196,12 +196,14 @@ void parse_options (int argc, char **argv)
         .add("no-drm", &param.no_drm, 0, "override document DRM settings")
 
         // misc.
+        .add("skip-req", &param.skip_req, 0, "prevent copying of required files, only generate files unique to pdf")
         .add("clean-tmp", &param.clean_tmp, 1, "remove temporary files after conversion")
         .add("tmp-dir", &param.tmp_dir, param.tmp_dir, "specify the location of tempory directory.")
         .add("data-dir", &param.data_dir, param.data_dir, "specify data directory")
         // TODO: css drawings are hidden on print, for annot links, need to fix it for other drawings
 //        .add("css-draw", &param.css_draw, 0, "[experimental and unsupported] CSS drawing")
         .add("debug", &param.debug, 0, "print debugging information")
+        .add("quiet", &param.quiet, 0, "silence preprocessing/working output")
 
         // meta
         .add("version,v", "print copyright and version info", &show_version_and_exit)
@@ -249,7 +251,7 @@ void check_param()
     if(param.output_filename.empty())
     {
         const string s = get_filename(param.input_filename);
-        param.image_filename = s.substr(0, s.size() - 4) + "%x";
+        param.image_filename = s.substr(0, s.size() - 4) + "_%x";
         if(get_suffix(param.input_filename) == ".pdf")
         {
             param.output_filename = s.substr(0, s.size() - 4) + ".html";
@@ -263,7 +265,7 @@ void check_param()
     else
     {
         const string suffix = get_suffix(param.output_filename);
-        param.image_filename = param.output_filename.substr(0, param.output_filename.size() - suffix.size()) + "%x";
+        param.image_filename = param.output_filename.substr(0, param.output_filename.size() - suffix.size()) + "_%x";
     }
 
     if(param.page_filename.empty())

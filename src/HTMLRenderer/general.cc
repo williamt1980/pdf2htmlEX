@@ -114,8 +114,10 @@ void HTMLRenderer::process(PDFDoc *doc)
             break;
         }
 
-        cerr << "Working: " << (i-param.first_page) << "/" << page_count << '\r' << flush;
-
+        if (!param.quiet) {
+            cerr << "Working: " << (i-param.first_page) << "/" << page_count << '\r' << flush;
+        }
+        
         if(param.split_pages)
         {
             string filled_template_filename = (char*)str_fmt(param.page_filename.c_str(), i);
@@ -147,10 +149,12 @@ void HTMLRenderer::process(PDFDoc *doc)
             f_curpage = nullptr;
         }
     }
-    if(page_count >= 0)
-        cerr << "Working: " << page_count << "/" << page_count;
-    cerr << endl;
-
+    if (!param.quiet) {
+        if(page_count >= 0)
+            cerr << "Working: " << page_count << "/" << page_count;
+        cerr << endl;
+    }
+    
     ////////////////////////
     // Process Outline
     if(param.process_outline)
@@ -559,7 +563,7 @@ void HTMLRenderer::embed_file(ostream & out, const string & path, const string &
         writeAttribute(out, fn);
         out << entry.suffix_external << endl;
 
-        if(copy)
+        if(copy && !param.skip_req)
         {
             ifstream fin(path, ifstream::binary);
             if(!fin)
