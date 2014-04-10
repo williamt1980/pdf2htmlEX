@@ -189,6 +189,7 @@ void parse_options (int argc, char **argv)
 
         // background image
         .add("bg-format", &param.bg_format, "png", "specify background image format")
+        .add("imagepath-placeholder", &param.imagepath_placeholder, "", "placeholder to replace image path")
 
         // encryption
         .add("owner-password,o", &param.owner_password, "", "owner password (for encrypted files)", true)

@@ -134,7 +134,7 @@ void SplashBackgroundRenderer::embed_image(int pageno)
         }
         else
         {
-            f_page << (char*)html_renderer->str_fmt("%s.%s", filled_image_filename.c_str(), param.bg_format.c_str());
+            f_page << (char*)html_renderer->str_fmt("%s%s.%s", param.imagepath_placeholder.c_str(), filled_image_filename.c_str(), param.bg_format.c_str());
         }
         f_page << "\"/>";
     }

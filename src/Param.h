@@ -33,6 +33,7 @@ struct Param
     int split_pages;
     std::string dest_dir;
     std::string css_filename;
+    std::string imagepath_placeholder;
     std::string image_filename;
     std::string page_filename;
     std::string outline_filename;
